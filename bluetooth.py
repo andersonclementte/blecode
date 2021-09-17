@@ -9,18 +9,18 @@ class BLEControl:
         self.last_scan = None
         self.bait = None
         
-    def get_Address_Type(self):
+    def get_address_type(self):
         if self.target.addrType == 'random':
             return bluepy.btle.ADDR_TYPE_RANDOM
         else:
             return bluepy.btle.ADDR_TYPE_PUBLIC
 
-    def get_Address(self):
+    def get_address(self):
         return self.target.addr
 
     def control_connect(self):
-       self.target_type = self.get_Address_Type()
-       self.target_address = self.get_Address()
+       self.target_type = self.get_address_type()
+       self.target_address = self.get_address()
        self.bait = Bait(self.target_address, self.target_type)
        self.bait.connect()
 
@@ -32,6 +32,36 @@ class BLEControl:
     def show_Connection(self):
         print(self.bait.is_connected())
 
+    def control_services(self):
+        services = self.bait.list_services()
+        for service in services:
+            print(service.uuid)
+            print(service.peripheral)
+            print("fim do serviço")
+            print('\n')
+
+    def control_characteristics(self):
+        characteristics = self.bait.list_characteristics()
+
+        for characteristic in characteristics:
+            #leitura funciona com falhas
+            # if characteristic.supportsRead():
+            #     print(characteristic.read())
+            
+            print(characteristic.getHandle())
+            print(characteristic.uuid.getCommonName())
+            print(characteristic.uuid)
+            print(characteristic.peripheral)
+            print(characteristic.properties)
+            print(characteristic.propertiesToString())
+            print("Fim de caracteristica")
+            print("\n")
+
+    def control_descriptors(self):
+        print(self.bait.list_descriptors())
+
+
+##Class to handle scanning
 class ScanDelegate(DefaultDelegate):
     def __init__(self):
         DefaultDelegate.__init__(self)
@@ -44,7 +74,7 @@ class ScanDelegate(DefaultDelegate):
 
 
 scanner = Scanner().withDelegate(ScanDelegate())
-devices = scanner.scan(10.0)
+devices = scanner.scan(10.0) #lists devices
 bait_devices = []
 
 # for dev in devices:
@@ -72,6 +102,9 @@ for dev in devices:
 
 shell = BLEControl(bait_devices[0])
 shell.control_connect()
-shell.show_Connection()
-shell.control_disconnect()
-shell.show_Connection()#
+#shell.show_Connection()
+#shell.control_disconnect()
+#shell.show_Connection()#
+#shell.control_services() ##listando serviços como objeto, ok
+shell.control_characteristics()
+#shell.control_descriptors()
