@@ -12,10 +12,25 @@ class Bait:
         except:
             print("Falha de conexão")
             return False
+        print("Conectado")
         return True
 
     def disconnect(self):
         self.connection.disconnect()
+        print("Desconectado")
+        self.connection = None
     
     def is_connected(self):
         return self.connection
+
+    def list_services(self):
+        self.services = self.connection.getServices()
+        return self.services
+
+    def list_characteristics(self):
+        self.characteristics = self.connection.getCharacteristics()
+        return self.characteristics
+
+    def list_descriptors(self):
+        self.descriptors = self.connection.getDescriptors()
+        return self.descriptors
