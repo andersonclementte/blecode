@@ -1,5 +1,7 @@
 import bluepy
-from bluepy.btle import Scanner, DefaultDelegate
+from bluepy import btle
+# import numpy as np
+from bluepy.btle import UUID, Scanner, DefaultDelegate
 from bait import Bait
 
 
@@ -40,26 +42,35 @@ class BLEControl:
             print("fim do serviço")
             print('\n')
 
-    def control_characteristics(self):
-        characteristics = self.bait.list_characteristics()
+    def print_characteristichandle(self, handle):
+        print(self.bait.characteristic_handle(handle))
 
-        for characteristic in characteristics:
+    def control_characteristics(self):
+        self.characteristics = self.bait.list_characteristics()
+
+
+        for characteristic in self.characteristics:
             #leitura funciona com falhas
             # if characteristic.supportsRead():
-            #     print(characteristic.read())
+            #     print(f'Leitura: {characteristic.read()}')
+                # self.print_characteristichandle(characteristic.getHandle())
             
-            print(characteristic.getHandle())
-            print(characteristic.uuid.getCommonName())
-            print(characteristic.uuid)
-            print(characteristic.peripheral)
-            print(characteristic.properties)
-            print(characteristic.propertiesToString())
+            print(f'Handle: {characteristic.getHandle()}')
+            print(f'UUID Descrição: {characteristic.uuid.getCommonName()}')
+            print(f'UUI: {characteristic.uuid}')
+            print(f'Periferico: {characteristic.peripheral}')
+            print(f'Bitmask da propriedade: {characteristic.properties}')
+            print(f'Propriedades de caracteristica: {characteristic.propertiesToString()}')
             print("Fim de caracteristica")
             print("\n")
 
     def control_descriptors(self):
         print(self.bait.list_descriptors())
 
+    def write_characteristic(self):
+        pass
+        # uuid = btle.UUID("00002a00-0000-1000-8000-00805f9b34fb")
+        
 
 ##Class to handle scanning
 class ScanDelegate(DefaultDelegate):
@@ -105,6 +116,8 @@ shell.control_connect()
 #shell.show_Connection()
 #shell.control_disconnect()
 #shell.show_Connection()#
-#shell.control_services() ##listando serviços como objeto, ok
-shell.control_characteristics()
+shell.control_services() ##listando serviços como objeto, ok
+#shell.control_characteristics()
 #shell.control_descriptors()
+# shell.print_characteristichandle()
+#shell.write_characteristic()

@@ -10,9 +10,9 @@ class Bait:
         try:
             self.connection = bluepy.btle.Peripheral(self.mac_address, self._addr_type,0)
         except:
-            print("Falha de conexão")
+            print("Falha de conexão\n")
             return False
-        print("Conectado")
+        print("Conectado\n")
         return True
 
     def disconnect(self):
@@ -34,3 +34,9 @@ class Bait:
     def list_descriptors(self):
         self.descriptors = self.connection.getDescriptors()
         return self.descriptors
+
+    def characteristic_handle(self, handle):
+        return self.connection.readCharacteristic(handle)
+
+    def get_service_by_uuid(self, uuid):
+        return self.connection.getServiceByUUID(uuid)
