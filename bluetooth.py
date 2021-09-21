@@ -1,7 +1,7 @@
 import bluepy
-from bluepy import btle
+#from bluepy import btle
 # import numpy as np
-from bluepy.btle import UUID, Scanner, DefaultDelegate
+from bluepy.btle import Scanner, DefaultDelegate
 from bait import Bait
 
 
@@ -51,13 +51,13 @@ class BLEControl:
 
         for characteristic in self.characteristics:
             #leitura funciona com falhas
-            # if characteristic.supportsRead():
-            #     print(f'Leitura: {characteristic.read()}')
+            if characteristic.supportsRead():
+                print(f'Leitura: {characteristic.read()}')
                 # self.print_characteristichandle(characteristic.getHandle())
             
             print(f'Handle: {characteristic.getHandle()}')
             print(f'UUID Descrição: {characteristic.uuid.getCommonName()}')
-            print(f'UUI: {characteristic.uuid}')
+            print(f'UUID: {characteristic.uuid}')
             print(f'Periferico: {characteristic.peripheral}')
             print(f'Bitmask da propriedade: {characteristic.properties}')
             print(f'Propriedades de caracteristica: {characteristic.propertiesToString()}')
@@ -68,8 +68,15 @@ class BLEControl:
         print(self.bait.list_descriptors())
 
     def write_characteristic(self):
-        pass
         # uuid = btle.UUID("00002a00-0000-1000-8000-00805f9b34fb")
+        self.characteristics = self.bait.list_characteristics()
+        #print(*self.characteristics, sep = "\n")
+        #print(self.characteristics[3])
+        to_write = self.characteristics[3]
+        to_write.write('hello world'.encode())
+        # print(f'Leitura: {self.characteristics[3].read()}')
+        #print(self.characteristics[3].read())
+        print("Escrita ok\n")
         
 
 ##Class to handle scanning
@@ -116,8 +123,20 @@ shell.control_connect()
 #shell.show_Connection()
 #shell.control_disconnect()
 #shell.show_Connection()#
-shell.control_services() ##listando serviços como objeto, ok
+#shell.control_services() ##listando serviços como objeto, ok
 #shell.control_characteristics()
 #shell.control_descriptors()
 # shell.print_characteristichandle()
-#shell.write_characteristic()
+shell.write_characteristic()
+
+scanner = Scanner().withDelegate(ScanDelegate())
+devices = scanner.scan(10.0) #lists devices
+
+for dev in devices:
+    print("Device address: %s" % dev.addr)
+    print("Device address type: %s" % dev.addrType)
+    print("Device RSSI: %d dB" % dev.rssi)
+    for (adtype, desc, value) in dev.getScanData():
+        print("Descrição: %s" % desc)
+        print("Valor: %s" % value)
+    print("\n")
