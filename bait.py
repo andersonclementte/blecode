@@ -40,3 +40,6 @@ class Bait:
 
     def get_service_by_uuid(self, uuid):
         return self.connection.getServiceByUUID(uuid)
+
+    def bait_notification(self):
+        return self.connection.waitForNotifications(1.0)
