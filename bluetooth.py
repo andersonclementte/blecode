@@ -1,4 +1,5 @@
 import bluepy
+import time
 #from bluepy import btle
 # import numpy as np
 from bluepy.btle import Scanner, DefaultDelegate
@@ -10,6 +11,11 @@ class BLEControl:
         self.target = target
         self.last_scan = None
         self.bait = None
+        self.characteristics = None
+    
+    def get_characteristics(self):
+        if self.characteristics == None:
+            self.characteristics = self.bait.list_characteristics()
         
     def get_address_type(self):
         if self.target.addrType == 'random':
@@ -47,34 +53,35 @@ class BLEControl:
         print(self.bait.characteristic_handle(handle))
 
     def control_characteristics(self):
-        self.characteristics = self.bait.list_characteristics()
+        self.get_characteristics()
 
-
-        for characteristic in self.characteristics:
-        #     #leitura funciona com falhas
-            if characteristic.supportsRead():
-                print(f'Leitura: {characteristic.read()}')
-                # self.print_characteristichandle(characteristic.getHandle())
-            
-            print(f'Handle: {characteristic.getHandle()}')
-            print(f'UUID Descrição: {characteristic.uuid.getCommonName()}')
-            print(f'UUID: {characteristic.uuid}')
-            print(f'Periferico: {characteristic.peripheral}')
-            print(f'Bitmask da propriedade: {characteristic.properties}')
-            print(f'Propriedades de caracteristica: {characteristic.propertiesToString()}')
-            print("Fim de caracteristica")
-            print("\n")
+        if self.characteristics != None:
+            for characteristic in self.characteristics:
+                 #leitura funciona com falhas
+                if characteristic.supportsRead():
+                    print(f'Leitura: {characteristic.read()}')
+                    # self.print_characteristichandle(characteristic.getHandle())
+                
+                print(f'Handle: {characteristic.getHandle()}')
+                print(f'UUID Descrição: {characteristic.uuid.getCommonName()}')
+                print(f'UUID: {characteristic.uuid}')
+                print(f'Periferico: {characteristic.peripheral}')
+                print(f'Bitmask da propriedade: {characteristic.properties}')
+                print(f'Propriedades de caracteristica: {characteristic.propertiesToString()}')
+                print("Fim de caracteristica")
+                print("\n")
 
     def control_descriptors(self):
         print(self.bait.list_descriptors())
 
     def write_characteristic(self):
         # uuid = btle.UUID("00002a00-0000-1000-8000-00805f9b34fb")
-        self.characteristics = self.bait.list_characteristics()
-        #print(*self.characteristics, sep = "\n")
-        #print(self.characteristics[3])
-        to_write = self.characteristics[3]
-        to_write.write('hello world'.encode())
+        # self.characteristics = self.bait.list_characteristics()
+        self.get_characteristics()
+        # print(*self.characteristics, sep = "\n")
+        # print(self.characteristics[7])
+        to_write = self.characteristics[7]
+        to_write.write('1'.encode())
         # print(f'Leitura: {self.characteristics[3].read()}')
         #print(self.characteristics[3].read())
         print("Escrita ok\n")
@@ -102,6 +109,7 @@ class ScanDelegate(DefaultDelegate):
             print(data.decode("utf-8"))
 
 
+
 scanner = Scanner().withDelegate(ScanDelegate())
 devices = scanner.scan(10.0) #lists devices
 bait_devices = []
@@ -117,7 +125,7 @@ bait_devices = []
 
 for dev in devices:
     for (adtype, desc, value) in dev.getScanData():
-        if 'Zephyr' in value:
+        if 'Empty Example' in value:
             bait_devices.append(dev)
 
 # for bait in bait_devices:
@@ -135,11 +143,16 @@ shell.control_connect()
 #shell.show_Connection()
 #shell.control_disconnect()
 #shell.show_Connection()#
-shell.control_services() ##listando serviços como objeto, ok
-shell.control_characteristics()
+# shell.control_services() ##listando serviços como objeto, ok
+# shell.control_characteristics()
 #shell.control_descriptors()
 # shell.print_characteristichandle()
-# shell.write_characteristic()
+shell.write_characteristic()
+print("Enviando...")
+time.sleep(5)
+print("Enviado")
+time.sleep(5)
+print(f'Leitura: {shell.characteristics[7].read()}')
 
 # while True:
 #     if shell.control_notification():

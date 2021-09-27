@@ -8,19 +8,19 @@ class MyDelegate(btle.DefaultDelegate):
         print("A notification was received: %s" %data)
 
 
-p = btle.Peripheral("ca:ed:18:af:35:01", btle.ADDR_TYPE_RANDOM) #ca:ed:18:af:35:01
+p = btle.Peripheral("08:6b:d7:e1:93:6e", btle.ADDR_TYPE_PUBLIC) #ca:ed:18:af:35:01
 p.setDelegate( MyDelegate() )
 
 # Setup to turn notifications on, e.g.
-svc = p.getServiceByUUID("0000180d-0000-1000-8000-00805f9b34fb") #Heart Rate 0000180d-0000-1000-8000-00805f9b34fb
+svc = p.getServiceByUUID("adb88100-8ade-48c0-bbfd-7dace7160901") 
 ch = svc.getCharacteristics()[0]
 
 print(ch.valHandle)
 
-# p.writeCharacteristic(ch.valHandle, "\x02\x00\x05\x1e\x0c-\x1e\x01\x00\x01".encode())
+print(f'{p.writeCharacteristic(ch.valHandle, "hello world".encode())}')
 
 while True:
-    if p.waitForNotifications(1.0):
+    if p.waitForNotifications():
         # handleNotification() was called
         continue
 
