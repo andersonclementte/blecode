@@ -43,3 +43,9 @@ class Bait:
 
     def bait_notification(self):
         return self.connection.waitForNotifications(1.0)
+
+    def readChar(self, handle):
+        return self.connection.readCharacteristic(handle)
+    
+    def writeChar(self, handle, value):
+        return self.connection.writeChar(handle, value)
