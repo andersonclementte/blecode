@@ -58,8 +58,8 @@ class BLEControl:
         if self.characteristics != None:
             for characteristic in self.characteristics:
                  #leitura funciona com falhas
-                if characteristic.supportsRead():
-                    print(f'Leitura: {characteristic.read()}')
+                # if characteristic.supportsRead():
+                #     print(f'Leitura: {characteristic.read()}')
                     # self.print_characteristichandle(characteristic.getHandle())
                 
                 print(f'Handle: {characteristic.getHandle()}')
@@ -78,7 +78,7 @@ class BLEControl:
         # uuid = btle.UUID("00002a00-0000-1000-8000-00805f9b34fb")
         # self.characteristics = self.bait.list_characteristics()
         self.get_characteristics()
-        # print(*self.characteristics, sep = "\n")
+        print(*self.characteristics, sep = "\n")
         # print(self.characteristics[7])
         to_write = self.characteristics[7]
         to_write.write('1'.encode())
@@ -125,7 +125,7 @@ bait_devices = []
 
 for dev in devices:
     for (adtype, desc, value) in dev.getScanData():
-        if 'Empty Example' in value:
+        if 'ISCA' in value:
             bait_devices.append(dev)
 
 # for bait in bait_devices:
@@ -148,11 +148,11 @@ shell.control_connect()
 #shell.control_descriptors()
 # shell.print_characteristichandle()
 shell.write_characteristic()
-print("Enviando...")
-time.sleep(5)
-print("Enviado")
-time.sleep(5)
-print(f'Leitura: {shell.characteristics[7].read()}')
+# print("Enviando...")
+# time.sleep(5)
+# print("Enviado")
+# time.sleep(5)
+# print(f'Leitura: {shell.characteristics[7].read()}')
 
 # while True:
 #     if shell.control_notification():

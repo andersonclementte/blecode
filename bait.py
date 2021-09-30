@@ -22,6 +22,7 @@ class Bait:
     
     def is_connected(self):
         return self.connection
+        
 
     def list_services(self):
         self.services = self.connection.getServices()
@@ -45,7 +46,7 @@ class Bait:
         return self.connection.waitForNotifications(1.0)
 
     def readChar(self, handle):
-        return self.connection.readCharacteristic(handle)
+        return print(self.connection.readCharacteristic(handle))
     
     def writeChar(self, handle, value):
         return self.connection.writeChar(handle, value)
