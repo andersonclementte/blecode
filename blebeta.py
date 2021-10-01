@@ -115,12 +115,20 @@ class BLEShell(cmd.Cmd):
             #         exemplo: handle 41 da placa nrf suporta leitura, escrita e indicação mas desconecta'''
             #     print(f'Leitura: {characteristic.read()}')
             #     print('suporta leitura')    
-            print(f'Handle: {characteristic.getHandle()}')
-            print(f'UUID Descrição: {characteristic.uuid.getCommonName()}')
-            print(f'UUID: {characteristic.uuid}')
-            print(f'Bitmask da propriedade: {characteristic.properties}')
-            print(f'Propriedades de caracteristica: {characteristic.propertiesToString()}')
-            print("Fim de caracteristica")
+            # print(f'Handle: {characteristic.getHandle()}')
+            # print(f'UUID Descrição: {characteristic.uuid.getCommonName()}')
+            # print(f'UUID: {characteristic.uuid}')
+            # print(f'Bitmask da propriedade: {characteristic.properties}')
+            # print(f'Propriedades de caracteristica: {characteristic.propertiesToString()}')
+            # print("Fim de caracteristica")
+            #print(dir(characteristic))
+            print("---------------------------")
+            print('descs ', characteristic.descs)
+            print('valHandle ',characteristic.valHandle)
+            print('descriptors ', characteristic.getDescriptors())
+            print('props ',characteristic.props)
+            print('propNames', characteristic.propNames)
+            print('----------------------')
             print("\n")
 
     def do_read(self, args): ##Tratar caso de erro handle errado e handle faltando
@@ -139,6 +147,9 @@ class BLEShell(cmd.Cmd):
             time.sleep(5)
         else:
             print("Bad Handle")
+    
+    def do_notify(self, args):
+        pass
 
     def do_quit(self, args):
         print ("Quitting.")
@@ -158,7 +169,7 @@ class ScanDelegate(DefaultDelegate):
                 print('{: <5} {: <30} {: <12}'.format(len(self.devices), dev_name, dev.addr))
 
         def handleNotification(self, cHandle, data):
-            print(f'Handle {cHandle} recebeu o dado: {data.decode()}')
+            print(f'Handle {cHandle} recebeu o dado: {data}')
 
 
 if __name__ == '__main__':
