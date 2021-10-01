@@ -16,20 +16,29 @@ class MyDelegate(btle.DefaultDelegate):
             print('{: <5} {: <30} {: <12}'.format(len(self.devices), dev_name, dev.addr))
 
     def handleNotification(self, cHandle, data):
-        print(f'Handle {cHandle} recebeu o dado: {data.decode()}')
+        print(f'Handle {cHandle} recebeu o dado: {data}')
 
-
-p = btle.Peripheral("08:6b:d7:e1:93:5a", btle.ADDR_TYPE_PUBLIC) #ca:ed:18:af:35:01 
+#addr zephyr: ca:ed:18:af:35:01 
+#addr isca: 08:6b:d7:e1:93:5a
+p = btle.Peripheral("ca:ed:18:af:35:01", btle.ADDR_TYPE_RANDOM) 
 p.setDelegate(MyDelegate())
 print('conectado')
 # Setup to turn notifications on, e.g.
-svc = p.getServiceByUUID("00000000-1000-2000-3000-111122223333") 
-ch = svc.getCharacteristics()
+#serviço isca: 00000000-1000-2000-3000-111122223333
+#serviço nordic: 0000180d-0000-1000-8000-00805f9b34fb
+svc = p.getServiceByUUID("0000180d-0000-1000-8000-00805f9b34fb") 
+ch = svc.getCharacteristics()[0]
 # n funcionou ch = p.getCharacteristics("4ffa859d-6bc8-4490-8379-0a292d9c7bd3")
-print(*ch, sep = "\n")
-print(ch[12].valHandle)
-p.writeCharacteristic(ch.valHandle, "0x01".encode())
+#print(*ch, sep = "\n")
+# print(ch.valHandle)
+# p.writeCharacteristic(ch.valHandle, "0x01".encode())
 #print(f'{p.writeCharacteristic(ch.valHandle, "0x01".encode())}')
+
+#setup_data = b"\x01\00"
+setup_data = "\x01\00".encode()
+p.writeCharacteristic(ch.valHandle+1, setup_data)
+
+#heart rate mesuremant handle 33
 
 while True:
     if p.waitForNotifications(1):
@@ -37,4 +46,4 @@ while True:
         continue
 
     print("Waiting...")
-    # Perhaps do something else here
+    #Perhaps do something else here
